@@ -1,0 +1,34 @@
+﻿@page "/"
+@page "/search/{searchText}"
+@page "/{categoryUrl}"
+@page "/orders"
+@inject IOrderService OrderService
+@attribute [Authorize]
+
+<PageTitle>OMS</PageTitle>
+
+<AuthorizeView>
+    <OrderList> </OrderList>
+</AuthorizeView>
+
+
+@code{
+    [Parameter]
+    public string? categoryUrl { get; set; } = null;
+
+    [Parameter]
+    public string? searchText { get; set; } = null;
+
+    protected override async Task OnParametersSetAsync()
+    {
+        if(searchText != null)
+        {
+            await OrderService.SearchOrders(searchText);
+        }
+        else
+        {
+            await OrderService.GetOrders(categoryUrl);
+        }
+
+    }
+}

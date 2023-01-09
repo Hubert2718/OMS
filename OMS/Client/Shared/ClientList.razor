@@ -1,0 +1,37 @@
+﻿@inject IClientService ClientService
+@implements IDisposable
+
+
+
+@if (ClientService.Clients == null || ClientService.Clients.Count == 0)
+{
+    <span>@ClientService.Message</span>
+}
+else
+{
+    <ul class="list-unstyled">
+        @foreach (var client in ClientService.Clients)
+        {
+            <li class="media my-3">
+                <div class="media-body">
+                    <p>@client.Name @client.Surname</p>
+                </div>
+            </li>
+        }
+    </ul>
+}
+
+@code {
+    protected override void OnInitialized()
+    {
+        ClientService.ClientsChanged += StateHasChanged;
+    }
+    public void Dispose()
+    {
+        ClientService.ClientsChanged -= StateHasChanged;
+    }
+    protected override async Task OnParametersSetAsync()
+    {  
+        await ClientService.GetClients();
+    }
+}

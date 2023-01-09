@@ -1,0 +1,7 @@
+﻿.home-button {
+    white-space: nowrap;
+    margin-right: .5em;
+    margin-left: 0em !important;
+    background-color: lightgrey;
+    width: 100px;
+}

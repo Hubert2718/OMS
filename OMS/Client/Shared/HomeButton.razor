@@ -1,0 +1,14 @@
+﻿@inject NavigationManager NavigationManager
+@attribute [Authorize]
+
+<button @onclick="GoToHome"
+    class="btn home-button">
+    <i class="oi oi-rss">OMS</i>
+</button>
+
+@code {
+    private void GoToHome()
+    {
+        NavigationManager.NavigateTo("");
+    }
+}

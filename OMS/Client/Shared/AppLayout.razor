@@ -1,0 +1,27 @@
+﻿@inherits LayoutComponentBase
+
+<div class="page">
+    <main>
+        <div class="top-row px-2">
+            <AuthorizeView>
+                <Authorized>
+                     <HomeButton />
+                    <div class="top-row-right">
+                        <UserButton />
+                        <Search />
+                    </div>
+                </Authorized>
+                <NotAuthorized>
+                    <UserButton />
+                </NotAuthorized>
+            </AuthorizeView>
+        </div>
+
+        <div class="nav-menu">
+            <AppNavMenu />
+        </div>
+            <article class="content px-2">
+                @Body
+            </article>
+    </main>
+</div>

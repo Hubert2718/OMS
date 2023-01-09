@@ -1,0 +1,29 @@
+﻿.header {
+    display: flex;
+    font-weight: 600;
+    text-align: left;
+    padding: 6px;
+    border-bottom: 2px solid black;
+    margin-bottom: 6px;
+    padding-bottom: 6px;
+}
+
+.row {
+    display: flex;
+    padding: 6px;
+    border-bottom: 1px solid lightgrey;
+    text-align: left;
+}
+
+.col {
+    flex: 1;
+}
+
+.col-visible {
+    text-align: center;
+}
+
+.col-small {
+    width: 60px !important;
+    text-align: left;
+}

@@ -1,0 +1,86 @@
+﻿@inject IOrderService OrderService
+@implements IDisposable
+@inject NavigationManager NavigationManager
+
+<button class="btn btn-primary" @onclick="CreateNewOrder" style="text-align: left">
+    <i class="oi oi-plus"></i> Add new order
+</button>
+
+<div class="header">
+    <div class="col-small">Id</div>
+    <div class="col">Status</div>
+    <div class="col">Date</div>
+    <div class="col">Action</div>
+</div>
+
+@foreach (var order in OrderService.Orders)
+{  
+    <div class="row">
+        <div class="col-small">
+            @order.Id
+        </div>
+        <div class="col">
+            @order.Status.Name
+        </div>
+        <div class="col">
+            @order.Date
+        </div>
+        <div class="col">
+            <button class="btn btn-primary" @onclick="(() => ShowOrderDetails(order.Id))">
+                <i class="oi oi-magnifying-glass"></i>
+            </button>
+            <button class="btn btn-primary" @onclick="(() => EditOrder(order))">
+                <i class="oi oi-pencil"></i>
+            </button>
+            <button class="btn btn-primary" @onclick="(() => DeleteOrder(order.Id))">
+                <i class="oi oi-trash"></i>
+            </button>
+        </div>
+    </div>
+    
+}
+
+
+@code {
+
+    protected override void OnInitialized() 
+    {
+        OrderService.OrdersChanged += StateHasChanged;
+    }
+
+
+    public void Dispose()
+    {
+        OrderService.OrdersChanged -= StateHasChanged;
+    }
+
+    private void ShowOrderDetails(int Id)
+    {
+        NavigationManager.NavigateTo($"order/{Id}");
+    }
+
+    private void CreateNewOrder()
+    {
+        ;
+    }
+
+    private void EditOrder(Order Order)
+    {
+        ;
+    }
+
+    private async Task UpdateOrder()
+    {
+        ;
+    }
+
+    private async Task CancelEditing()
+    {
+        ;
+    }
+
+    private async Task DeleteOrder(int id)
+    {
+        ;
+    }
+}

@@ -1,0 +1,108 @@
+﻿@page "/order/{id:int}"
+@inject IOrderService OrderService
+@inject NavigationManager NavigationManager
+@attribute [Authorize]
+
+@if(order == null)
+{
+    <span>Loading Order...</span>
+}
+else
+{
+    <button class="btn btn-light" @onclick="BackToOrders">
+        <i class="oi oi-arrow-left"></i> Orders
+    </button>
+
+    <div class="header">
+        Order Details
+    </div>
+    <div class="row">
+        <div class="col-title">ID:</div>
+        <div class="col-title">Date:</div>
+        <div class="col-title">Name:</div>
+        <div class="col-title">Client ID:</div>
+    </div>
+     <div class="row">
+        <div class="col">@order.Id</div>
+        <div class="col">@order.Date</div>
+        <div class="col">@order.Status.Name</div>
+        <div class="col">@order.ClientId</div>
+    </div>
+
+    <div class="header">
+        Address
+    </div>
+    <div class="row">
+        <div class="col-title">Street:</div>
+        <div class="col-title">Building Number:</div>
+        <div class="col-title">Apartment Number:</div>
+        <div class="col-title">Postal Code:</div>
+        <div class="col-title">City:</div>
+        <div class="col-title">Country:</div>
+
+    </div>
+    <div class="row">
+        <div class="col">@order.Address.Street</div>
+        <div class="col">@order.Address.BuildingNumber</div>
+        <div class="col">@order.Address.ApartmentNumer</div>
+        <div class="col">@order.Address.PostalCode</div>
+        <div class="col">@order.Address.City</div>
+        <div class="col">@order.Address.Country</div>
+    </div>
+
+    <div class="header">
+        Products
+    </div>
+    @foreach(var product in order.OrderProducts)
+    {
+        <div class="row">
+            <div class="col-title">Product ID:</div>
+            <div class="col-title">Product Name:</div>
+            <div class="col-title">Producer: </div>
+        </div>
+        <div class="row">
+            <div class="col">@product.Product.Id</div>
+            <div class="col">@product.Product.Name</div>
+            <div class="col">@product.Product.Producer</div>
+        </div>
+        <div style="border-bottom: 1px solid lightgray;"></div>
+    }
+
+    <button class="btn btn-primary" @onclick="ShowOrderHistory">
+        <i class="oi oi-book"></i> Order History
+    </button>
+}
+
+@code {
+    private Order? order = null;
+    private string message = string.Empty;
+    Order orderEditing = null;
+
+    [Parameter]
+    public int Id { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        message = "Loading order..."; 
+
+        var result= await OrderService.GetSingleOrder(Id);
+        if(!result.Success)
+        {
+            message = result.Message;
+        }
+        else
+        {
+            order = result.Data;
+        }
+    }
+
+    private void ShowOrderHistory()
+    {
+        ;
+    }
+
+    private void BackToOrders()
+    {
+        NavigationManager.NavigateTo("orders");
+    }
+}
