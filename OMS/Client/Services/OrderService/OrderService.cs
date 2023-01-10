@@ -12,8 +12,25 @@ namespace OMS.Client.Services.OrderService
         }
         public List<Order> Orders { get; set; } = new List<Order>();
         public string Message { get; set; } = "Loading orders...";
+        public List<Product> newProducts { get; set; } = new List<Product>();
 
         public event Action OrdersChanged;
+
+        public async Task AddOrder(Order order)
+        {
+            //Console.WriteLine(order.OrderProducts[0].Order.Id);
+            Console.WriteLine(order.OrderProducts[0].Product.Name);
+            var response = await http.PostAsJsonAsync("api/order/addorder", order);
+            Orders = (await response.Content.ReadFromJsonAsync<ServiceResponce<List<Order>>>()).Data;
+            OrdersChanged.Invoke();
+        }
+
+        public async Task DeleteOrder(int orderId)
+        {
+            var response = await http.DeleteAsync($"api/order/single/{orderId}");
+            Orders = (await response.Content.ReadFromJsonAsync<ServiceResponce<List<Order>>>()).Data;
+            OrdersChanged.Invoke();
+        }
 
         public async Task GetOrders(string? statusUrl = null)
         {
@@ -44,6 +61,13 @@ namespace OMS.Client.Services.OrderService
             }
             OrdersChanged?.Invoke();
             
+        }
+        public async Task UpdateOrder(Order order)
+        {
+            var response = await http.PutAsJsonAsync("api/order/update", order);
+            Orders = (await response.Content.ReadFromJsonAsync<ServiceResponce<List<Order>>>()).Data;
+            OrdersChanged.Invoke();
+
         }
     }
 }

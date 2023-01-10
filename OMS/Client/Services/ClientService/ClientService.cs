@@ -1,4 +1,7 @@
-﻿using System.ComponentModel;
+﻿using OMS.Client.Pages.Admin;
+using OMS.Shared;
+using System.ComponentModel;
+using System.Net.Http;
 
 namespace OMS.Client.Services.ClientService
 {
@@ -21,7 +24,6 @@ namespace OMS.Client.Services.ClientService
             var result = await http.GetFromJsonAsync<ServiceResponce<List<OMS.Shared.Client>>>("api/client");
             if (result != null && result.Data != null) 
                 Clients = result.Data;
-
             ClientsChanged.Invoke();
         }
 
@@ -33,6 +35,35 @@ namespace OMS.Client.Services.ClientService
         public Task SearchClients(string searchText)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task AddClient(OMS.Shared.Client client)
+        {
+            var response = await http.PostAsJsonAsync("api/client", client);
+            Clients = (await response.Content.ReadFromJsonAsync<ServiceResponce<List<OMS.Shared.Client>>>()).Data;
+            ClientsChanged.Invoke();
+        }
+
+        public async Task RemoveClient(int clientId)
+        {
+            var response = await http.DeleteAsync($"api/client/{clientId}");
+            Clients = (await response.Content.ReadFromJsonAsync<ServiceResponce<List<OMS.Shared.Client>>>()).Data;
+            ClientsChanged.Invoke();
+        }
+
+        public async Task UpdateClient(OMS.Shared.Client client)
+        {
+            var response = await http.PutAsJsonAsync("api/client", client);
+            Clients = (await response.Content.ReadFromJsonAsync<ServiceResponce<List<OMS.Shared.Client>>>()).Data;
+            ClientsChanged.Invoke();
+        }
+
+        public OMS.Shared.Client CreateNewClient()
+        {
+            var newClient = new OMS.Shared.Client { IsNew = true, Editing = true };
+            Clients.Add(newClient);
+            ClientsChanged.Invoke();
+            return newClient;
         }
     }
 }

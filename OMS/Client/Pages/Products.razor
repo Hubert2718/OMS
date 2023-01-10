@@ -1,0 +1,127 @@
+﻿@page "/products"
+@inject IProductService ProductService
+@attribute [Authorize]
+@implements IDisposable
+@inject NavigationManager NavigationManager
+
+
+<h3>Products</h3>
+<div class="header">
+    <div class="col-small" >Id</div>
+    <div class="col">Name</div>
+    <div class="col">Producer</div>
+    <div class="col"></div>
+</div>
+
+@if(ProductService.Products != null)
+{
+    @foreach (var product in ProductService.Products)
+    {
+        @if (product.Editing)
+        {
+            <EditForm Model="editingProduct" OnSubmit="UpdateProduct">
+                <div class="row">
+                    <div class="col-small">
+                        @editingProduct.Id
+                    </div>
+                    <div class="col">
+                        <InputText @bind-Value="editingProduct.Name" class="form-control"></InputText>
+                    </div>
+                    <div class="col">
+                        <InputText @bind-Value="editingProduct.Producer" class="form-control"></InputText>
+                    </div>
+
+                    <div class="col">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="oi oi-cloud-upload"></i>
+                        </button>
+                        <button class="btn btn-primary" @onclick="CancelEditing">
+                            <i class="oi oi-circle-x"></i>
+                        </button>
+                    </div>
+                </div>
+            </EditForm>
+        }
+        else
+        {
+            <div class="row">
+                <div class="col-small">
+                    @product.Id
+                </div>
+                <div class="col">
+                    @product.Name
+                </div>
+                <div class="col">
+                    @product.Producer
+                </div>
+                <div class="col">
+                    <button class="btn btn-primary" @onclick="(() => EditProduct(product))">
+                        <i class="oi oi-pencil"></i>
+                    </button>
+                    <button class="btn btn-primary" @onclick="(() => DeleteProduct(product.Id))">
+                        <i class="oi oi-trash"></i>
+                    </button>
+                </div>
+            </div>
+        }
+    }
+
+}
+
+
+<button class="btn btn-primary" @onclick="CreateNewProduct">
+    <i class="oi oi-plus"></i> Add new product
+</button>
+
+@code {
+    Product editingProduct = null;
+
+    protected override void OnInitialized()
+    {
+        ProductService.ProductsChanged += StateHasChanged;
+    }
+    public void Dispose()
+    {
+        ProductService.ProductsChanged -= StateHasChanged;
+    }
+    protected override async Task OnParametersSetAsync()
+    {
+        await ProductService.GetProducts();
+    }
+
+    private void CreateNewProduct()
+    {
+        editingProduct = ProductService.CreateNewProduct();
+    }
+
+    private void EditProduct(Product product)
+    {
+        product.Editing = true;
+        editingProduct = product;
+    }
+
+    private async Task UpdateProduct()
+    {
+        if (editingProduct.IsNew)
+        {
+            await ProductService.AddProduct(editingProduct);
+        }
+        else 
+        {
+            await ProductService.UpdateProduct(editingProduct);
+        }
+        editingProduct = new Product();
+        await ProductService.GetProducts();
+    }
+
+    private async Task CancelEditing()
+    {
+        editingProduct = new Product();
+        await ProductService.GetProducts();
+    }
+
+    private async Task DeleteProduct(int id)
+    {
+        await ProductService.DeleteProduct(id);
+    }
+}

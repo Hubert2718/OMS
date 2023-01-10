@@ -1,4 +1,5 @@
 ﻿@inject IOrderService OrderService
+@inject IStatusService StatusService
 @implements IDisposable
 @inject NavigationManager NavigationManager
 
@@ -14,38 +15,75 @@
 </div>
 
 @foreach (var order in OrderService.Orders)
-{  
-    <div class="row">
-        <div class="col-small">
-            @order.Id
+{
+    @if(order.Editing)
+    {
+        <EditForm Model="editingOrder" OnSubmit="UpdateOrder">
+            <div class="row">
+                <div class="col-small">
+                    @editingOrder.Id
+                </div>
+                <div class="col">
+                    <InputSelect @bind-Value="editingOrder.Status.Name" class="form-control">
+                        @foreach(var status in StatusService.StatusList)
+                        {
+                            <option>@status.Name</option>
+                        }
+                    </InputSelect>
+                </div>
+                <div class="col">
+                    @editingOrder.Date
+                </div>
+                <div class="col">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="oi oi-cloud-upload"></i>
+                    </button>
+                    <button class="btn btn-primary" @onclick="CancelEditing">
+                        <i class="oi oi-circle-x"></i>
+                    </button>
+                </div>
+            </div>
+        </EditForm>
+        
+    }
+    else
+    {
+        <div class="row">
+            <div class="col-small">
+                @order.Id
+            </div>
+            <div class="col">
+                @order.Status.Name
+            </div>
+            <div class="col">
+                @order.Date
+            </div>
+            <div class="col">
+                <button class="btn btn-primary" @onclick="(() => ShowOrderDetails(order.Id))">
+                    <i class="oi oi-magnifying-glass"></i>
+                </button>
+                <button class="btn btn-primary" @onclick="(() => EditOrder(order))">
+                    <i class="oi oi-pencil"></i>
+                </button>
+                <button class="btn btn-primary" @onclick="(() => DeleteOrder(order.Id))">
+                    <i class="oi oi-trash"></i>
+                </button>
+            </div>
         </div>
-        <div class="col">
-            @order.Status.Name
-        </div>
-        <div class="col">
-            @order.Date
-        </div>
-        <div class="col">
-            <button class="btn btn-primary" @onclick="(() => ShowOrderDetails(order.Id))">
-                <i class="oi oi-magnifying-glass"></i>
-            </button>
-            <button class="btn btn-primary" @onclick="(() => EditOrder(order))">
-                <i class="oi oi-pencil"></i>
-            </button>
-            <button class="btn btn-primary" @onclick="(() => DeleteOrder(order.Id))">
-                <i class="oi oi-trash"></i>
-            </button>
-        </div>
-    </div>
+    }
+
     
 }
 
 
 @code {
+    Order editingOrder = null;
 
-    protected override void OnInitialized() 
+    protected override async Task OnInitializedAsync() 
     {
+        //await OrderService.GetOrders();
         OrderService.OrdersChanged += StateHasChanged;
+        await StatusService.GetStatusList();
     }
 
 
@@ -61,26 +99,33 @@
 
     private void CreateNewOrder()
     {
-        ;
+        NavigationManager.NavigateTo("order/new");
     }
 
-    private void EditOrder(Order Order)
+    private void EditOrder(Order order)
     {
-        ;
+        order.Editing = true;
+        editingOrder = order;
     }
 
     private async Task UpdateOrder()
     {
-        ;
+        Status status = StatusService.StatusList.FirstOrDefault(s => s.Name.ToLower().Equals(editingOrder.Status.Name.ToLower()));
+        editingOrder.Status = status;
+        editingOrder.StatusId = status.Id;
+        await OrderService.UpdateOrder(editingOrder);
+        CancelEditing();
     }
 
     private async Task CancelEditing()
     {
-        ;
+        editingOrder.Editing = false;
+        editingOrder = null;
     }
 
     private async Task DeleteOrder(int id)
     {
-        ;
+        OrderService.DeleteOrder(id);
     }
+
 }

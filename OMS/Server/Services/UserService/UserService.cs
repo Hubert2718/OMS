@@ -31,6 +31,7 @@ namespace OMS.Server.Services.UserService
             }
 
             user.Deleted = true;
+            dataContext.Remove(user);
             await dataContext.SaveChangesAsync();
 
             return await GetUsers();
@@ -48,7 +49,6 @@ namespace OMS.Server.Services.UserService
             { 
                 Data = users
             };
-
         }
 
         public async Task<ServiceResponce<List<User>>> UpdateUser(User user)

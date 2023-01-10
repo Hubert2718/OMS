@@ -47,6 +47,7 @@ namespace OMS.Client.Services.UserService
 
         public async Task UpdateUser(User user)
         {
+            Console.WriteLine(user.Id);
             var response = await httpClient.PutAsJsonAsync("api/user", user);
             Users = (await response.Content.ReadFromJsonAsync<ServiceResponce<List<User>>>()).Data;
             OnChange.Invoke();
