@@ -3,9 +3,11 @@
 @attribute [Authorize]
 @implements IDisposable
 @inject NavigationManager NavigationManager
+@inject IToastService ToastService
 
-
-<h3>Clients</h3>
+<button class="btn btn-primary" @onclick="CreateNewClient">
+    <i class="oi oi-plus"></i> Add new client
+</button>
 <div class="header">
     <div class="col-small" >Id</div>
     <div class="col">Name</div>
@@ -77,10 +79,6 @@
     }
 }
 
-<button class="btn btn-primary" @onclick="CreateNewClient">
-    <i class="oi oi-plus"></i> Add new client
-</button>
-
 @code {
     Client editingClient = null;
 
@@ -113,10 +111,12 @@
         if (editingClient.IsNew)
         {
             await ClientService.AddClient(editingClient);
+            ToastService.ShowSuccess($"Successfully added client: {editingClient.Email}.");
         }
         else 
         {
             await ClientService.UpdateClient(editingClient);
+            ToastService.ShowSuccess($"Successfully updated client: {editingClient.Email}.");
         }
         editingClient = new OMS.Shared.Client();
         await ClientService.GetClients();

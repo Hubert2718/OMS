@@ -1,5 +1,4 @@
-﻿using OMS.Client.Pages;
-using OMS.Shared;
+﻿using OMS.Shared;
 using static System.Net.WebRequestMethods;
 
 namespace OMS.Client.Services.ProductService

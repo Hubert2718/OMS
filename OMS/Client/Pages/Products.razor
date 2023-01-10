@@ -3,9 +3,13 @@
 @attribute [Authorize]
 @implements IDisposable
 @inject NavigationManager NavigationManager
+@inject IToastService ToastService
 
 
-<h3>Products</h3>
+<button class="btn btn-primary" @onclick="CreateNewProduct">
+    <i class="oi oi-plus"></i> Add new product
+</button>
+
 <div class="header">
     <div class="col-small" >Id</div>
     <div class="col">Name</div>
@@ -68,11 +72,6 @@
 
 }
 
-
-<button class="btn btn-primary" @onclick="CreateNewProduct">
-    <i class="oi oi-plus"></i> Add new product
-</button>
-
 @code {
     Product editingProduct = null;
 
@@ -105,10 +104,12 @@
         if (editingProduct.IsNew)
         {
             await ProductService.AddProduct(editingProduct);
+            ToastService.ShowSuccess($"Successfully added product: {editingProduct.Name}.");
         }
         else 
         {
             await ProductService.UpdateProduct(editingProduct);
+            ToastService.ShowSuccess($"Successfully updated product: {editingProduct.Name}.");
         }
         editingProduct = new Product();
         await ProductService.GetProducts();

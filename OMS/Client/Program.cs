@@ -7,6 +7,7 @@ global using OMS.Client.Services.AuthService;
 global using Microsoft.AspNetCore.Components.Authorization;
 global using OMS.Client.Services.UserService;
 global using OMS.Client.Services.ProductService;
+global using Blazored.Toast;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using OMS.Client;
@@ -28,5 +29,6 @@ builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddOptions();
 builder.Services.AddAuthorizationCore();
 builder.Services.AddScoped<AuthenticationStateProvider, CustomAuthStateProvider>();
+builder.Services.AddBlazoredToast();
 
 await builder.Build().RunAsync();

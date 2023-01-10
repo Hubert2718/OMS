@@ -1,5 +1,4 @@
-﻿using OMS.Client.Pages.Admin;
-using OMS.Shared;
+﻿using OMS.Shared;
 using System.ComponentModel;
 using System.Net.Http;
 

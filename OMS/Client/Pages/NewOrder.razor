@@ -6,6 +6,7 @@
 @inject NavigationManager NavigationManager
 @attribute [Authorize]
 @implements IDisposable
+@inject IToastService ToastService
 
 
 <EditForm Model="order">
@@ -241,10 +242,10 @@
 
         order.OrderProducts = opList;
         order.Address = address;
-        Console.WriteLine(order.Address.City);
-        //Console.WriteLine(order.OrderProducts[0].Order.Id);
-        Console.WriteLine(order.OrderProducts[0].Product.Name);
         await OrderService.AddOrder(order);
+
+        ToastService.ShowSuccess($"Successfully added order: {order.Id}.");
+        NavigationManager.NavigateTo("orders");
     }
 
     private void CreateNewClient()
