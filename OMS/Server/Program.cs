@@ -6,8 +6,9 @@ global using OMS.Server.Services.StatusService;
 global using OMS.Server.Services.ClientService;
 global using OMS.Server.Services.AuthService;
 global using OMS.Server.Services.UserService;
+global using OMS.Server.Services.ProductService;
 using Microsoft.AspNetCore.ResponseCompression;
-using OMS.Server.Services.ProductService;
+
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
@@ -30,6 +31,7 @@ builder.Services.AddScoped<IStatusService, StatusService>();
 builder.Services.AddScoped<IClientService, ClientService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {

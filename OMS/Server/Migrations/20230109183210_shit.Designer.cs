@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using OMS.Server.Data;
 
@@ -11,9 +12,11 @@ using OMS.Server.Data;
 namespace OMS.Server.Migrations
 {
     [DbContext(typeof(DataContext))]
-    partial class DataContextModelSnapshot : ModelSnapshot
+    [Migration("20230109183210_shit")]
+    partial class shit
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -87,9 +90,6 @@ namespace OMS.Server.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<bool>("Deleted")
-                        .HasColumnType("bit");
-
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -117,7 +117,6 @@ namespace OMS.Server.Migrations
                         new
                         {
                             Id = 1,
-                            Deleted = false,
                             Email = "",
                             Name = "Hubert",
                             NumberOfOrders = 0,
@@ -127,7 +126,6 @@ namespace OMS.Server.Migrations
                         new
                         {
                             Id = 2,
-                            Deleted = false,
                             Email = "",
                             Name = "Alicja",
                             NumberOfOrders = 0,
@@ -195,7 +193,7 @@ namespace OMS.Server.Migrations
                             Id = 1,
                             AddressId = 1,
                             ClientId = 1,
-                            Date = new DateTime(2023, 1, 10, 18, 26, 59, 777, DateTimeKind.Local).AddTicks(8583),
+                            Date = new DateTime(2023, 1, 9, 19, 32, 10, 792, DateTimeKind.Local).AddTicks(5984),
                             Deleted = false,
                             OrderValue = 0,
                             StatusId = 1
@@ -205,7 +203,7 @@ namespace OMS.Server.Migrations
                             Id = 2,
                             AddressId = 2,
                             ClientId = 2,
-                            Date = new DateTime(2023, 1, 10, 18, 26, 59, 777, DateTimeKind.Local).AddTicks(8615),
+                            Date = new DateTime(2023, 1, 9, 19, 32, 10, 792, DateTimeKind.Local).AddTicks(6014),
                             Deleted = false,
                             OrderValue = 0,
                             StatusId = 2
@@ -215,7 +213,7 @@ namespace OMS.Server.Migrations
                             Id = 3,
                             AddressId = 1,
                             ClientId = 1,
-                            Date = new DateTime(2023, 1, 10, 18, 26, 59, 777, DateTimeKind.Local).AddTicks(8647),
+                            Date = new DateTime(2023, 1, 9, 19, 32, 10, 792, DateTimeKind.Local).AddTicks(6016),
                             Deleted = false,
                             OrderValue = 0,
                             StatusId = 1
@@ -225,7 +223,7 @@ namespace OMS.Server.Migrations
                             Id = 4,
                             AddressId = 1,
                             ClientId = 2,
-                            Date = new DateTime(2023, 1, 10, 18, 26, 59, 777, DateTimeKind.Local).AddTicks(8649),
+                            Date = new DateTime(2023, 1, 9, 19, 32, 10, 792, DateTimeKind.Local).AddTicks(6018),
                             Deleted = false,
                             OrderValue = 0,
                             StatusId = 7
@@ -235,7 +233,7 @@ namespace OMS.Server.Migrations
                             Id = 77,
                             AddressId = 2,
                             ClientId = 2,
-                            Date = new DateTime(2023, 1, 10, 18, 26, 59, 777, DateTimeKind.Local).AddTicks(8651),
+                            Date = new DateTime(2023, 1, 9, 19, 32, 10, 792, DateTimeKind.Local).AddTicks(6020),
                             Deleted = false,
                             OrderValue = 0,
                             StatusId = 4
@@ -245,7 +243,7 @@ namespace OMS.Server.Migrations
                             Id = 18,
                             AddressId = 1,
                             ClientId = 1,
-                            Date = new DateTime(2023, 1, 10, 18, 26, 59, 777, DateTimeKind.Local).AddTicks(8653),
+                            Date = new DateTime(2023, 1, 9, 19, 32, 10, 792, DateTimeKind.Local).AddTicks(6022),
                             Deleted = false,
                             OrderValue = 0,
                             StatusId = 1
@@ -260,9 +258,6 @@ namespace OMS.Server.Migrations
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
-                    b.Property<int>("NumOfProducts")
-                        .HasColumnType("int");
-
                     b.HasKey("OrderId", "ProductId");
 
                     b.HasIndex("ProductId");
@@ -273,32 +268,27 @@ namespace OMS.Server.Migrations
                         new
                         {
                             OrderId = 1,
-                            ProductId = 1,
-                            NumOfProducts = 0
+                            ProductId = 1
                         },
                         new
                         {
                             OrderId = 2,
-                            ProductId = 4,
-                            NumOfProducts = 0
+                            ProductId = 4
                         },
                         new
                         {
                             OrderId = 2,
-                            ProductId = 5,
-                            NumOfProducts = 0
+                            ProductId = 5
                         },
                         new
                         {
                             OrderId = 3,
-                            ProductId = 2,
-                            NumOfProducts = 0
+                            ProductId = 2
                         },
                         new
                         {
                             OrderId = 3,
-                            ProductId = 3,
-                            NumOfProducts = 0
+                            ProductId = 3
                         });
                 });
 
@@ -309,9 +299,6 @@ namespace OMS.Server.Migrations
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<bool>("Deleted")
-                        .HasColumnType("bit");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -329,35 +316,30 @@ namespace OMS.Server.Migrations
                         new
                         {
                             Id = 1,
-                            Deleted = false,
                             Name = "gril elektryczny ciepla parowa x2137 |Januszex",
                             Producer = ""
                         },
                         new
                         {
                             Id = 2,
-                            Deleted = false,
                             Name = "iphone 13 | 64GB",
                             Producer = ""
                         },
                         new
                         {
                             Id = 3,
-                            Deleted = false,
                             Name = "airpods pro 2",
                             Producer = ""
                         },
                         new
                         {
                             Id = 4,
-                            Deleted = false,
                             Name = "xbox xs 1TB",
                             Producer = ""
                         },
                         new
                         {
                             Id = 5,
-                            Deleted = false,
                             Name = "xbox pad",
                             Producer = ""
                         });
@@ -516,7 +498,7 @@ namespace OMS.Server.Migrations
 
             modelBuilder.Entity("OMS.Shared.OrderProducts", b =>
                 {
-                    b.HasOne("OMS.Shared.Order", null)
+                    b.HasOne("OMS.Shared.Order", "Order")
                         .WithMany("OrderProducts")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -527,6 +509,8 @@ namespace OMS.Server.Migrations
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.Navigation("Order");
 
                     b.Navigation("Product");
                 });

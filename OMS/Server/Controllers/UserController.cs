@@ -15,7 +15,7 @@ namespace OMS.Server.Controllers
             UserService = userService;
         }
 
-        [HttpGet]
+        [HttpGet, Authorize(Roles = "Admin")]
         public async Task<ActionResult<ServiceResponce<List<User>>>> GetUsers()
         {
             var result = await UserService.GetUsers();

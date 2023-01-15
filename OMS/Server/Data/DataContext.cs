@@ -189,6 +189,31 @@ namespace OMS.Server.Data
                     ClientId = 1,
                     StatusId = 1,
                     AddressId = 1,
+                },
+                new Order
+                {
+                    Id = 4,
+                    Date = DateTime.Now,
+                    ClientId = 2,
+                    StatusId = 7,
+                    AddressId = 1,
+                },
+                new Order
+                {
+                    Id = 77,
+                    Date = DateTime.Now,
+                    ClientId = 2,
+                    StatusId = 4,
+                    AddressId = 2,
+                },
+
+                new Order
+                {
+                    Id = 18,
+                    Date = DateTime.Now,
+                    ClientId = 1,
+                    StatusId = 1,
+                    AddressId = 1,
                 });
         }
         // SQL table of orders

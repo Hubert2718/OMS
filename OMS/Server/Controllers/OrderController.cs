@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using OMS.Server.Services.ProductService;
+using OMS.Shared;
 
 namespace OMS.Server.Controllers
 {
@@ -17,6 +18,34 @@ namespace OMS.Server.Controllers
         public async Task<ActionResult<ServiceResponce<List<Order>>>> GetOrders()
         {
             var response = await orderService.GetOrdersAsync();
+            return Ok(response);
+        }
+
+        [HttpDelete("{orderId}")]
+        public async Task<ActionResult<ServiceResponce<List<Order>>>> DeleteOrder(int orderId)
+        {
+            var response = await orderService.DeleteOrder(orderId);
+            if (!response.Success)
+                return BadRequest(response);
+            return Ok(response);
+        }
+
+        [HttpPost]
+        [Route("addorder")]
+        public async Task<ActionResult<ServiceResponce<List<Order>>>> AddOrder(Order order)
+        {
+            var response = await orderService.AddOrder(order);
+            if (!response.Success)
+                return BadRequest(response);
+            return Ok(response);
+        }
+
+        [HttpPut("update")]
+        public async Task<ActionResult<ServiceResponce<List<Order>>>> UpdateOrder(Order order)
+        {
+            var response = await orderService.UpdateOrder(order);
+            if (!response.Success)
+                return BadRequest(response);
             return Ok(response);
         }
 

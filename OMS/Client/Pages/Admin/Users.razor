@@ -90,6 +90,10 @@
     {
         UserService.OnChange -= StateHasChanged;
     }
+    protected override async Task OnParametersSetAsync()
+    {
+        await UserService.GetUsers();
+    }
 
     private void CreateNewUser()
     {

@@ -9,10 +9,11 @@ namespace OMS.Shared
 {
     public class OrderProducts
     {
-        [JsonIgnore]
-        public Order Order { get; set; }
+        //[JsonIgnore]
+        //public Order Order { get; set; }
         public int OrderId { get; set; } 
         public Product Product { get; set; }
+        public int NumOfProducts { get; set; }
         public int ProductId { get; set; }  
     }
 }

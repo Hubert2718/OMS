@@ -1,0 +1,287 @@
+﻿@page "/order/new"
+@inject IOrderService OrderService
+@inject IStatusService StatusService
+@inject IClientService ClientService
+@inject IProductService ProductService
+@inject NavigationManager NavigationManager
+@attribute [Authorize]
+@implements IDisposable
+@inject IToastService ToastService
+
+
+<EditForm Model="order">
+    <DataAnnotationsValidator />
+    <div class="row">
+        <div class="col">
+            <button class="btn btn-light" @onclick="BackToOrders">
+                <i class="oi oi-arrow-left"></i> Orders
+            </button>
+        </div>
+    </div>
+
+
+    <div class="header">
+        Order Details
+    </div>
+    <div class="row">
+        <div class="col-title">ID:</div>
+        <div class="col-title">Date:</div>
+        <div class="col-title">Status:</div>
+        <div class="col-title">Client ID:</div>
+        <div class="col-title">New Client:</div>
+    </div>
+    <div class="row">
+        <div class="col">
+            @order.Id
+        </div>
+        <div class="col">
+            <InputDate @bind-Value="order.Date" class="form-control">Date</InputDate>
+        </div>
+        <div class="col">
+            <InputSelect @bind-Value="order.Status.Name" class="form-control">
+                @foreach (var status in StatusService.StatusList)
+                {
+                    <option>@status.Name</option>
+                }
+            </InputSelect>
+        </div>
+        <div class="col">
+            <InputSelect @bind-Value="order.Client.Email" class="form-control">
+                @foreach (var client in ClientService.Clients)
+                {
+                    <option>@client.Email</option>
+                }
+            </InputSelect>
+        </div>
+        <div class="col">
+            <button @onclick="CreateNewClient" class="btn btn-primary">
+                <i class="oi oi-plus"></i> Create New Client
+            </button>
+        </div>
+
+        <div class="header">
+            Address
+        </div>
+        <div class="row">
+            <div class="col-title">Street:</div>
+            <div class="col-title">Building Number:</div>
+            <div class="col-title">Apartment Number:</div>
+            <div class="col-title">Postal Code:</div>
+            <div class="col-title">City:</div>
+            <div class="col-title">Country:</div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <InputText @bind-Value="address.Street" class="form-control"></InputText>
+             </div>
+            <div class="col">
+                <InputNumber @bind-Value="address.BuildingNumber" class="form-control"></InputNumber>
+            </div>
+            <div class="col">
+                <InputNumber @bind-Value="address.ApartmentNumer" class="form-control"></InputNumber>
+            </div>
+            <div class="col">
+                <InputText @bind-Value="address.PostalCode" class="form-control"></InputText>
+            </div>
+            <div class="col">
+                <InputText @bind-Value="address.City" class="form-control"></InputText>
+            </div>
+            <div class="col">
+                <InputText @bind-Value="address.Country" class="form-control"></InputText>
+            </div>
+        </div>
+    </div>
+</EditForm>
+
+
+<EditForm Model="editingProduct">
+    <div class="header">
+        Products
+    </div>
+    <div class="row">
+        <div class="col-title">ID:</div>
+        <div class="col-title">Name:</div>
+        <div class="col-title">Producer:</div>
+        <div class="col-title">Quantity:</div>
+        <div class="col-title"></div>
+    </div>
+    @foreach (var p in newProducts)
+    {
+        <div class="row">
+            <div class="col">
+                @p.Id
+            </div>
+            <div class="col">
+                @p.Name
+            </div>
+            <div class="col">
+                @p.Producer
+            </div>
+            <div class="col">
+                @p.Quantity
+            </div>
+            <div class="col">
+                <button class="btn btn-primary" @onclick="(() => InccreaseProductQuantity(p.Id))">
+                    <i class="oi oi-plus"></i>
+                </button>
+                <button class="btn btn-primary" @onclick="(() => DecreaseProductQuantity(p.Id))">
+                    <i class="oi oi-minus"></i>
+                </button>
+                <button class="btn btn-primary" @onclick="(() => DeleteProductFromList(p.Id))">
+                    <i class="oi oi-trash"></i>
+                </button>
+            </div>
+        </div>
+    }
+    <div class="row">
+        <div class="col"></div>
+        <div class="col">
+            @if (ProductService.Products != null)
+            {
+                <InputSelect @bind-Value="editingProduct.Name" class="form-control">
+                    @foreach (var product in ProductService.Products)
+                    {
+                        <option>@product.Name</option>
+                    }
+                </InputSelect>
+            }
+
+        </div>
+        <div class="col"></div>
+        <div class="col col-small">
+            <InputNumber @bind-Value="editingProduct.Quantity" class="form-control"></InputNumber>
+        </div>
+        <div class="col">
+            <button class="btn btn-primary" @onclick="AddNewProduct">
+                <i class="oi oi-plus"></i>Add product
+            </button>
+        </div>
+    </div>
+</EditForm>
+
+<div class="col">
+    <button class="btn btn-primary" @onclick="AddOrder">
+        <i class="oi oi-cloud-upload"></i>Submit
+    </button>
+</div>
+
+@code {
+    Order order = null;
+    OMS.Shared.Client client = null;
+    Status status = null;
+    Address address = null;
+    Product editingProduct = new Product();
+
+    List<Product> newProducts { get; set; } = new List<Product>();
+
+    private string message = string.Empty;
+
+    [Parameter]
+    public int Id { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        //await OrderService.GetOrders();
+        order = new Order()
+        {
+                Id = OrderService.Orders.Last().Id + 1,
+                Date = DateTime.Now
+        };
+        client = new OMS.Shared.Client();
+        address = new Address();
+        status = new Status()
+        {
+            Name = "awaiting payment"
+        };
+        order.Status = status;
+        order.Client = client;
+        order.Address = address;
+        OrderService.OrdersChanged += StateHasChanged;
+        ClientService.ClientsChanged += StateHasChanged;
+        ProductService.ProductsChanged += StateHasChanged;
+    }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await ClientService.GetClients();
+        await StatusService.GetStatusList();
+        await ProductService.GetProducts();
+    }
+
+
+    public void Dispose()
+    {
+        OrderService.OrdersChanged -= StateHasChanged;
+        ClientService.ClientsChanged -= StateHasChanged;
+    }
+
+    private void BackToOrders()
+    {
+        NavigationManager.NavigateTo("orders");
+    }
+
+    private async Task AddOrder()
+    {
+        Status status = StatusService.StatusList.FirstOrDefault(s => s.Name.ToLower().Equals(order.Status.Name.ToLower()));
+        order.Status = status;
+        order.StatusId = status.Id;
+        order.ClientId = ClientService.Clients.FirstOrDefault(c => c.Email.Equals(order.Client.Email)).Id;
+        List<OrderProducts> opList = new List<OrderProducts>();
+
+        foreach(var product in newProducts)
+        {
+            OrderProducts op = new OrderProducts
+            {
+                OrderId = order.Id,
+                //Order = order,
+                ProductId = product.Id,
+                Product = product
+            };
+            opList.Add(op);
+        }
+
+        order.OrderProducts = opList;
+        order.Address = address;
+        await OrderService.AddOrder(order);
+
+        ToastService.ShowSuccess($"Successfully added order: {order.Id}.");
+        NavigationManager.NavigateTo("orders");
+    }
+
+    private void CreateNewClient()
+    {
+        //TODO
+    }
+
+    private void AddNewProduct()
+    {
+        if(editingProduct.Name.Equals(String.Empty))
+        {
+            return;
+        }
+        Product product = ProductService.Products.FirstOrDefault(p => p.Name.ToLower().Equals(editingProduct.Name.ToLower()));
+        newProducts.Add(product);
+        ProductService.Products.Remove(product);
+        editingProduct = new Product();
+    }
+
+    private void DeleteProductFromList(int productId)
+    {
+        Product product = newProducts.Where(p => p.Id == productId).First();
+        newProducts.Remove(product);
+        ProductService.Products.Add(product);
+    }
+
+    private void InccreaseProductQuantity(int productId)
+    {
+        newProducts.Where(p => p.Id == productId).First().Quantity += 1;
+    }
+
+    private void DecreaseProductQuantity(int productId)
+    {
+        Product product = newProducts.Where(p => p.Id == productId).First();
+        if (product.Quantity >= 2)
+            product.Quantity -= 1;
+    }
+
+}
